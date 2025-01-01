@@ -1,4 +1,4 @@
-Copyright © 2022 - 2024 Riyufuchi
+Copyright © 2022 - 2025 Riyufuchi
 
 Proprietary license, this library is not open-source and it CAN'T be used for commercial purposes.
 Application and developers that use this library must give credit to the creators (Class MarvusLib contains some tools for that).
