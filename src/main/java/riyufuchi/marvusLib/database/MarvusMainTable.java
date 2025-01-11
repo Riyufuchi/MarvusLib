@@ -27,6 +27,7 @@ import riyufuchi.sufuLib.records.SufuSimpleRow;
  */
 public class MarvusMainTable extends MarvusDataTable implements IDatabase<Transaction>
 {
+	private static final long serialVersionUID = 3L;
 	protected transient Consumer<String> errorHandler;
 	private transient Comparator<FinancialCategory> sorter;
 	

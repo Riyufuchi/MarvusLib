@@ -3,7 +3,7 @@ package riyufuchi.marvusLib.data;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import riyufuchi.sufuLib.utils.time.SufuDateUtils;
+import riyufuchi.sufuLib.time.SufuDateUtils;
 
 /**
  * Transaction class represents simple transaction<br><br>

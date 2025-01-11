@@ -1,8 +1,8 @@
 package riyufuchi.marvusLib.records;
 
 import riyufuchi.marvusLib.data.Transaction;
-import riyufuchi.marvusLib.enums.UserAction;
+import riyufuchi.marvusLib.enums.MarvusAction;
 
-public record LastChange(UserAction userAction, Transaction transactionInQuestion)
+public record LastChange(MarvusAction userAction, Transaction transactionInQuestion)
 {
 }

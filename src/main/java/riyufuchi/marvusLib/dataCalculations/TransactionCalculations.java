@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 import javax.swing.JFrame;
 
 import riyufuchi.marvusLib.data.Transaction;
-import riyufuchi.sufuLib.utils.gui.SufuDialogHelper;
+import riyufuchi.sufuLib.gui.utils.SufuDialogHelper;
 
 /**
  * @author Riyufuchi
