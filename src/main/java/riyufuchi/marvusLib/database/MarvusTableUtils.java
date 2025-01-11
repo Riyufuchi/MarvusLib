@@ -4,10 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import riyufuchi.marvusLib.records.TransactionMacro;
-import riyufuchi.sufuLib.records.SufuSimpleRow;
-import riyufuchi.sufuLib.interfaces.IDatabase;
-import riyufuchi.sufuLib.interfaces.SufuITableDB;
-import riyufuchi.sufuLib.records.SufuRowDB;
+import riyufuchi.sufuLib.interfaces.SufuDatabaseInterface;
+import riyufuchi.sufuLib.records.SufuRow;
 
 public final class MarvusTableUtils
 {
@@ -17,14 +15,14 @@ public final class MarvusTableUtils
 		return table;
 	}
 	
-	public static LinkedList<SufuSimpleRow<String>> selectOrdered(IDatabase<String> data)
+	public static <E> LinkedList<SufuRow<E, String>> selectOrdered(SufuDatabaseInterface<E, String> data)
 	{
-		LinkedList<SufuSimpleRow<String>> dataList = data.getRows();
+		LinkedList<SufuRow<E, String>> dataList = data.getRows();
 		dataList.sort((t1, t2) -> { return t1.entity().compareTo(t2.entity()); });
 		return dataList;
 	}
 	
-	public static LinkedList<SufuRowDB<String, TransactionMacro>> selectMacroOrdered(SufuITableDB<String, TransactionMacro> macros)
+	public static LinkedList<SufuRow<String, TransactionMacro>> selectMacroOrdered(SufuDatabaseInterface<String, TransactionMacro> macros)
 	{
 		return macros.getRows((t1, t2) -> t1.entity().name().compareTo(t2.entity().name()));
 	}

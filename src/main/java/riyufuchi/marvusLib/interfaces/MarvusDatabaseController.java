@@ -5,7 +5,7 @@ import riyufuchi.marvusLib.records.MarvusCategoryStatistic;
 import riyufuchi.marvusLib.records.MarvusDataStatistics;
 import riyufuchi.marvusLib.records.TransactionMacro;
 import riyufuchi.sufuLib.interfaces.IDatabase;
-import riyufuchi.sufuLib.interfaces.SufuITableDB;
+import riyufuchi.sufuLib.interfaces.SufuDatabaseInterface;
 
 /**
  * @author riyufuchi
@@ -14,6 +14,12 @@ import riyufuchi.sufuLib.interfaces.SufuITableDB;
  */
 public interface MarvusDatabaseController
 {
+	//Insert
+	boolean insertCategory(String category);
+	boolean insertEntity(String name);
+	//Update
+	boolean updateCategory(int categoryID, String replacementCategory);
+	boolean updateEntity(int nameID, String replacementName);
 	// Remove
 	boolean removeCategory(int categoryID, int replacementCategoryID);
 	boolean removeEntity(int nameID, int replacementNameID);
@@ -24,8 +30,8 @@ public interface MarvusDatabaseController
 	MarvusDataStatistics createDataStatistics(int year);
 	MarvusCategoryStatistic createCategoryStatistic(String category, int year);
 	// Get other table controllers
-	SufuITableDB<String, TransactionMacro> getMacrosTableController();
+	SufuDatabaseInterface<String, TransactionMacro> getMacrosTableController();
 	IDatabase<Transaction> getTransactionsTableController();
-	IDatabase<String> getCategoriesTableController();
-	IDatabase<String> getEntitiesTableController();
+	SufuDatabaseInterface<Integer, String> getCategoriesTableController();
+	SufuDatabaseInterface<Integer, String> getEntitiesTableController();
 }

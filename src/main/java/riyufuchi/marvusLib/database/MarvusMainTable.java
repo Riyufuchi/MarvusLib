@@ -16,14 +16,14 @@ import riyufuchi.marvusLib.dataUtils.TransactionComparation;
 import riyufuchi.marvusLib.dataUtils.TransactionComparation.CompareMethod;
 import riyufuchi.marvusLib.records.YearOverview;
 import riyufuchi.sufuLib.interfaces.IDatabase;
-import riyufuchi.sufuLib.records.SufuSimpleRow;
+import riyufuchi.sufuLib.records.SufuRow;
 
 /**
  * This class doesn't represent actual connection to database, just "simulates" it
  * 
  * @author Riyufuchi
  * @since 1.95 - 12.02.2024
- * @version 30.12.2024
+ * @version 11.01.2025
  */
 public class MarvusMainTable extends MarvusDataTable implements IDatabase<Transaction>
 {
@@ -258,12 +258,12 @@ public class MarvusMainTable extends MarvusDataTable implements IDatabase<Transa
 	}
 
 	@Override
-	public LinkedList<SufuSimpleRow<Transaction>> getRows()
+	public LinkedList<SufuRow<Integer, Transaction>> getRows()
 	{
 		LinkedList<Transaction> list = toList();
-		LinkedList<SufuSimpleRow<Transaction>> listRows = new LinkedList<>();
+		LinkedList<SufuRow<Integer, Transaction>> listRows = new LinkedList<>();
 		for (Transaction t : list)
-			listRows.add(new SufuSimpleRow<Transaction>(t.getID(), t));
+			listRows.add(new SufuRow<>(t.getID(), t));
 		return listRows;
 	}
 }
