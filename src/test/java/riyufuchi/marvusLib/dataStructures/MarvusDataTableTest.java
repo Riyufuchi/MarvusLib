@@ -2,6 +2,8 @@ package riyufuchi.marvusLib.dataStructures;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.Month;
+
 import org.junit.Test;
 
 import riyufuchi.marvusLib.data.Money;
@@ -17,6 +19,7 @@ public class MarvusDataTableTest
 		this.ct = new MarvusDataTable();
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testAdd01()
 	{
@@ -24,6 +27,7 @@ public class MarvusDataTableTest
 		assertEquals(TestData.transaction1, ct.getMonth(4).getFirst());
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testAdd02()
 	{
@@ -62,6 +66,7 @@ public class MarvusDataTableTest
 		assertEquals(false, ct.add(null));
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testSet01()
 	{
@@ -72,6 +77,7 @@ public class MarvusDataTableTest
 		t = null;
 		assertEquals(1000, ct.getMonth(4).getFirst().getValue().intValueExact());
 	}
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testSet02()
 	{
@@ -90,6 +96,7 @@ public class MarvusDataTableTest
 		assertEquals(0, ct.size());
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testRemove02()
 	{
@@ -97,6 +104,7 @@ public class MarvusDataTableTest
 		ct.remove(TestData.transaction2);
 		assertEquals(0, ct.getMonth(4).size());
 	}
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testRemove03()
 	{
@@ -109,6 +117,7 @@ public class MarvusDataTableTest
 		assertEquals(t.getID() , ct.getMonth(1).get(0).getID());
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testRemove04()
 	{
@@ -200,5 +209,20 @@ public class MarvusDataTableTest
 		ct.add(TestData.transaction2);
 		ct.add(new Transaction());
 		assertEquals(true, ct.contains(TestData.transaction2));
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testGetMonth01()
+	{
+		ct.add(TestData.transactionJanuar);
+		assertEquals(true, ct.getMonth(0).contains(TestData.transactionJanuar));
+	}
+	
+	@Test
+	public void testGetMonth02()
+	{
+		ct.add(TestData.transactionDecember);
+		assertEquals(true, ct.getMonth(Month.DECEMBER).contains(TestData.transactionDecember));
 	}
 }

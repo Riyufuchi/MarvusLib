@@ -16,11 +16,13 @@ import riyufuchi.marvusLib.interfaces.MarvusCollection;
  * This class sort data into categories. Data starts from x = 0
  * 
  * @author Riyufuchi
- * @version 2.3 - 06.11.2023
  * @since 1.60 - 24.08.2023
+ * @version 2.4 - 15.01.2025
  */
+@Deprecated
 public class MarvusDataTableCategorized implements Serializable, MarvusCollection<Transaction>
 {
+	private static final long serialVersionUID = -5L;
 	private ArrayList<LinkedList<FinancialCategory>> months;
 	private int x, size;
 	

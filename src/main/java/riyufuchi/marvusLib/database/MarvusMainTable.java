@@ -12,10 +12,10 @@ import java.util.function.Consumer;
 import riyufuchi.marvusLib.data.Transaction;
 import riyufuchi.marvusLib.dataStructures.MarvusDataTable;
 import riyufuchi.marvusLib.dataUtils.FinancialCategory;
-import riyufuchi.marvusLib.dataUtils.TransactionComparation;
-import riyufuchi.marvusLib.dataUtils.TransactionComparation.CompareMethod;
-import riyufuchi.marvusLib.records.YearOverview;
-import riyufuchi.sufuLib.interfaces.IDatabase;
+import riyufuchi.marvusLib.dataUtils.MarvusDataComparation;
+import riyufuchi.marvusLib.enums.MarvusTransactionOrderBy;
+import riyufuchi.marvusLib.records.MarvusYearOverview;
+import riyufuchi.sufuLib.interfaces.SufuIDatabase;
 import riyufuchi.sufuLib.records.SufuRow;
 
 /**
@@ -23,9 +23,9 @@ import riyufuchi.sufuLib.records.SufuRow;
  * 
  * @author Riyufuchi
  * @since 1.95 - 12.02.2024
- * @version 11.01.2025
+ * @version 15.01.2025
  */
-public class MarvusMainTable extends MarvusDataTable implements IDatabase<Transaction>
+public class MarvusMainTable extends MarvusDataTable implements SufuIDatabase<Integer, Transaction>
 {
 	private static final long serialVersionUID = 3L;
 	protected transient Consumer<String> errorHandler;
@@ -39,7 +39,7 @@ public class MarvusMainTable extends MarvusDataTable implements IDatabase<Transa
 	public MarvusMainTable(Consumer<String> errorHandler)
 	{
 		super();
-		this.sorter = TransactionComparation.compareFC(CompareMethod.By_name);
+		this.sorter = MarvusDataComparation.compareFinancialCategory(MarvusTransactionOrderBy.NAME);
 		if (errorHandler == null)
 			this.errorHandler = e -> System.out.println(e);
 		else
@@ -48,7 +48,7 @@ public class MarvusMainTable extends MarvusDataTable implements IDatabase<Transa
 	
 	public void sort()
 	{
-		for (int i = 1; i < 13; i++) // Months are 1 - 12
+		for (Month i : Month.values())
 			Collections.sort(getCategorizedMonth(i), sorter);
 	}
 	
@@ -109,7 +109,7 @@ public class MarvusMainTable extends MarvusDataTable implements IDatabase<Transa
 	}
 	
 	//TODO: Optimize this more
-	public YearOverview getYearOverview(int year)
+	public MarvusYearOverview getYearOverview(int year)
 	{
 		BigDecimal[] incomes = new BigDecimal[12];
 		BigDecimal[] spendings = new BigDecimal[12];
@@ -150,83 +150,63 @@ public class MarvusMainTable extends MarvusDataTable implements IDatabase<Transa
 			totalOutcomes[x] = totalOutcomes[x - 1].add(outcomes[i]);
 			x++;
 		}
-		return new YearOverview(year, incomes, spendings, outcomes, totalIncome, totalSpendings, totalIncome.add(totalSpendings), totalOutcomes);
+		return new MarvusYearOverview(year, incomes, spendings, outcomes, totalIncome, totalSpendings, totalIncome.add(totalSpendings), totalOutcomes);
 	}
 	
 	public LinkedList<FinancialCategory> getCategorizedMonth(Month month)
 	{
-		if (month == null)
-			return new LinkedList<>();
-		return getCategorizedMonth(month.getValue());
-	}
-	
-	
-	public LinkedList<FinancialCategory> getCategorizedMonth(int monthOrderNum)
-	{
 		LinkedList<FinancialCategory> list = new LinkedList<>();
-		if (!(monthOrderNum > 0 && monthOrderNum < 13))
-		{
-			errorHandler.accept(("Error at getCategorizedMonth(int).\nMonth order number values are 1 - 12.\nInputed value: " + monthOrderNum));
+		if (month == null)
 			return list;
-		}
 		FinancialCategory holder = null;
-		for (Transaction t : this)
+		for (Transaction t : getMonth(month))
 		{
-			if (t.getDate().getMonthValue() == monthOrderNum)
+			holder = new FinancialCategory(t.getCategory(), t);
+			for (FinancialCategory mc : list)
 			{
-				holder = new FinancialCategory(t.getCategory(), t);
-				for (FinancialCategory mc : list)
+				if (mc.getCategory().equals(holder.getCategory()))
 				{
-					if (mc.getCategory().equals(holder.getCategory()))
-					{
-						mc.add(t);
-						holder = null;
-						break;
-					}
+					mc.add(t);
+					holder = null;
+					break;
 				}
-				if(holder != null)
-					list.add(holder);
 			}
+			if(holder != null)
+				list.add(holder);
 		}
 		Collections.sort(list, sorter);
 		return list;
 	}
 	
-	public LinkedList<FinancialCategory> getCategorizedMonthByNames(int monthOrderNum)
+	public LinkedList<FinancialCategory> getCategorizedMonthByNames(Month month)
 	{
 		LinkedList<FinancialCategory> list = new LinkedList<>();
-		if (!(monthOrderNum > 0 && monthOrderNum < 13))
-		{
-			errorHandler.accept(("Error at getCategorizedMonth(int).\nMonth order number values are 1 - 12.\nInputed value: " + monthOrderNum));
+		if (month == null)
 			return list;
-		}
 		FinancialCategory holder = null;
-		for (Transaction t : this)
+		for (Transaction t : getMonth(month))
 		{
-			if (t.getDate().getMonthValue() == monthOrderNum)
+			holder = new FinancialCategory(t);
+			for (FinancialCategory mc : list)
 			{
-				holder = new FinancialCategory(t);
-				for (FinancialCategory mc : list)
+				if (mc.getCategory().equals(holder.getCategory()))
 				{
-					if (mc.getCategory().equals(holder.getCategory()))
-					{
-						mc.add(t);
-						holder = null;
-						break;
-					}
+					mc.add(t);
+					holder = null;
+					break;
 				}
-				if(holder != null)
-					list.add(holder);
 			}
+			if(holder != null)
+				list.add(holder);
 		}
 		Collections.sort(list, sorter);
 		return list;
 	}
 
 	@Override
-	public Optional<Transaction> getByID(final int ID)
+	public Optional<Transaction> getByID(final Integer ID)
 	{
-		for(int i = 0; i < 12; i++)
+		for(Month i : Month.values())
 		{
 			for(Transaction t : getMonth(i))
 			{
@@ -238,15 +218,15 @@ public class MarvusMainTable extends MarvusDataTable implements IDatabase<Transa
 	}
 
 	@Override
-	public boolean remove(int ID)
+	public boolean delete(Integer ID)
 	{
 		Transaction t = new Transaction();
 		t.setID(ID);
-		return remove(t);
+		return super.remove(t);
 	}
 
 	@Override
-	public boolean set(int ID, Transaction e)
+	public boolean set(Integer ID, Transaction e)
 	{
 		return set(e);
 	}
@@ -265,5 +245,23 @@ public class MarvusMainTable extends MarvusDataTable implements IDatabase<Transa
 		for (Transaction t : list)
 			listRows.add(new SufuRow<>(t.getID(), t));
 		return listRows;
+	}
+
+	@Override
+	public boolean add(Integer ID, Transaction e)
+	{
+		return add(e);
+	}
+
+	@Override
+	public int getCount()
+	{
+		return size();
+	}
+
+	@Override
+	public LinkedList<SufuRow<Integer, Transaction>> getRows(Comparator<SufuRow<Integer, Transaction>> comparator) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

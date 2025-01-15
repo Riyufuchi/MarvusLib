@@ -10,6 +10,8 @@ import riyufuchi.marvusLib.data.Transaction;
 public class TestData
 {
 	public static final Transaction transaction =  new Transaction();
+	public static final Transaction transactionJanuar =  new Transaction("T1", "C1", "300.125", "16.01.2025", "");
+	public static final Transaction transactionDecember =  new Transaction("T1", "C1", "300.125", "16.12.2025", "");
 	public static final Transaction transaction1 =  new Transaction("T1", "C1", "300.125", "16.05.2023", "");
 	public static final Transaction transaction2 = new Transaction("T2", "C2", "300.125", "17.05.2023", "Note");
 	public static final Transaction transaction2_equal = new Transaction("T2", "C2", "300.125", "17.05.2023", "Note");

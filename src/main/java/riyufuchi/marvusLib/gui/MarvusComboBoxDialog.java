@@ -7,12 +7,12 @@ import javax.swing.JPanel;
 import riyufuchi.marvusLib.database.MarvusTableUtils;
 import riyufuchi.marvusLib.enums.MarvusAction;
 import riyufuchi.marvusLib.records.MarvusComboBoxDialogTexts;
-import riyufuchi.sufuLib.gui.SufuDataDialog;
+import riyufuchi.sufuLib.gui.SufuDataDialogGeneric;
 import riyufuchi.sufuLib.gui.utils.SufuComponentTools;
 import riyufuchi.sufuLib.gui.utils.SufuDialogHelper;
 import riyufuchi.sufuLib.gui.utils.SufuFactory;
 import riyufuchi.sufuLib.gui.utils.SufuGuiTools;
-import riyufuchi.sufuLib.interfaces.SufuDatabaseInterface;
+import riyufuchi.sufuLib.interfaces.SufuIDatabase;
 import riyufuchi.sufuLib.records.SufuPair;
 import riyufuchi.sufuLib.records.SufuRow;
 
@@ -24,10 +24,10 @@ import riyufuchi.sufuLib.records.SufuRow;
  * @version 11.01.2025
  */
 @SuppressWarnings("serial")
-public final class MarvusComboBoxDialog extends SufuDataDialog<SufuPair<SufuRow<Integer, String>, SufuRow<Integer, String>>>
+public final class MarvusComboBoxDialog extends SufuDataDialogGeneric<JFrame, SufuPair<SufuRow<Integer, String>, SufuRow<Integer, String>>>
 {
 	private JComboBox<SufuRow<Integer, String>> mainCB, userInputCB;
-	private SufuDatabaseInterface<Integer, String> tableController;
+	private SufuIDatabase<Integer, String> tableController;
 	private MarvusAction dialogAction;
 	
 	/**
@@ -37,7 +37,7 @@ public final class MarvusComboBoxDialog extends SufuDataDialog<SufuPair<SufuRow<
 	 * @param tableController
 	 * @param dialogAction
 	 */
-	public MarvusComboBoxDialog(JFrame parentFrame, MarvusComboBoxDialogTexts texts, SufuDatabaseInterface<Integer, String> tableController, MarvusAction dialogAction)
+	public MarvusComboBoxDialog(JFrame parentFrame, MarvusComboBoxDialogTexts texts, SufuIDatabase<Integer, String> tableController, MarvusAction dialogAction)
 	{
 		super(texts.title(), parentFrame, DialogType.OK, false, false, false, new Object[]{ dialogAction.toString() });
 		this.dialogAction = dialogAction;
@@ -100,9 +100,16 @@ public final class MarvusComboBoxDialog extends SufuDataDialog<SufuPair<SufuRow<
 		closeDialog();
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void onOkEdit()
 	{
-		SufuRow<Integer, String> row = new SufuRow<>(0, (String)userInputCB.getEditor().getItem());
+		SufuRow<Integer, String> row = null;
+		switch (userInputCB.getEditor().getItem())
+		{
+			case String s -> row = new SufuRow<>(0, s);
+			case SufuRow<?, ?> r -> row = (SufuRow<Integer, String>) r;
+			default -> { return; }
+		}
 		if (row.entity().isBlank() || isUserInputEqual(row))
 			return;
 		data = new SufuPair<>(SufuComponentTools.extractComboboxValue(mainCB), row);

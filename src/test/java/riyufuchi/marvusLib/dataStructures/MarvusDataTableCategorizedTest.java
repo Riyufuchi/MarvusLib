@@ -8,8 +8,10 @@ import riyufuchi.marvusLib.data.Money;
 import riyufuchi.marvusLib.data.Transaction;
 import riyufuchi.marvusLib.libTesting.TestData;
 
+@SuppressWarnings("deprecation")
 public class MarvusDataTableCategorizedTest
 {
+	
 	private MarvusDataTableCategorized ct = new MarvusDataTableCategorized();
 	
 	public MarvusDataTableCategorizedTest()
@@ -90,7 +92,6 @@ public class MarvusDataTableCategorizedTest
 		assertEquals(0, ct.size());
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testRemove02()
 	{
@@ -99,7 +100,6 @@ public class MarvusDataTableCategorizedTest
 		assertEquals(0, ct.get(4, 0).size());
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testRemove03()
 	{

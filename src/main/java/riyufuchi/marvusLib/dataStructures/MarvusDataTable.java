@@ -1,6 +1,7 @@
 package riyufuchi.marvusLib.dataStructures;
 
 import java.io.Serializable;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,11 +16,12 @@ import riyufuchi.marvusLib.interfaces.MarvusCollection;
  * This class sort data into categories. Data starts from x = 0
  * 
  * @author Riyufuchi
- * @version 2.4 - 05.12.2023
- * @since 1.8 - 15.11.2024
+ * @since 2.4 - 05.12.2023
+ * @version 15.01.2025
  */
 public class MarvusDataTable implements Serializable, MarvusCollection<Transaction>
 {
+	private static final long serialVersionUID = 5L;
 	private ArrayList<LinkedList<Transaction>> months;
 	private int x, size;
 	
@@ -193,9 +195,15 @@ public class MarvusDataTable implements Serializable, MarvusCollection<Transacti
 	 * @param index month number - 1
 	 * @return copy of data for given month
 	 */
+	@Deprecated
 	public LinkedList<Transaction> getMonth(int index)
 	{
 		return new LinkedList<>(months.get(index));
+	}
+	
+	public LinkedList<Transaction> getMonth(Month month)
+	{
+		return new LinkedList<>(months.get(month.getValue() - 1));
 	}
 
 
