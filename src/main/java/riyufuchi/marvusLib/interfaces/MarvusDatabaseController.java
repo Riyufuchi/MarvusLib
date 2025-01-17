@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import riyufuchi.marvusLib.data.Transaction;
-import riyufuchi.marvusLib.dataUtils.FinancialCategory;
+import riyufuchi.marvusLib.dataUtils.FinancialCategorySafe;
 import riyufuchi.marvusLib.records.MarvusCategoryStatistic;
 import riyufuchi.marvusLib.records.MarvusDataStatistics;
 import riyufuchi.marvusLib.records.TransactionMacro;
@@ -15,7 +15,7 @@ import riyufuchi.sufuLib.interfaces.SufuIDatabase;
 /**
  * @author riyufuchi
  * @since ?
- * @version 15.01.2025
+ * @version 17.01.2025
  */
 public interface MarvusDatabaseController
 {
@@ -35,6 +35,8 @@ public interface MarvusDatabaseController
 	// Generic
 	boolean updateAtribbute(String attr, String oldValue, String newValue);
 	boolean updateAtribbute(String whereAttr, String whereValue, String targetAttr, String oldValue, String newValue);
+	// Calculations
+	int assumeYear();
 	// Create
 	boolean createBackup();
 	MarvusDataStatistics createDataStatistics(int year);
@@ -42,12 +44,12 @@ public interface MarvusDatabaseController
 	MarvusYearOverview createYearOverview(int year);
 	// Create and get
 	LinkedList<Transaction> getMonth(Month month);
-	LinkedList<FinancialCategory> getCategorizedMonth(Month month);
-	LinkedList<FinancialCategory> getCategorizedMonthByNames(Month month);
-	LinkedList<FinancialCategory> getCategorizedYearByCategories(int year);
+	LinkedList<FinancialCategorySafe> getCategorizedMonth(Month month);
+	LinkedList<FinancialCategorySafe> getCategorizedMonthByNames(Month month);
+	LinkedList<FinancialCategorySafe> getCategorizedYearByCategories(int year);
 	// Get other table controllers
-	SufuIDatabase<String, TransactionMacro> getMacrosTableController();
+	SufuIDatabase<String, TransactionMacro> getMacrosTable();
 	SufuIDatabase<Integer, Transaction> getTransactionsTable();
-	SufuIDatabase<Integer, String> getCategoriesTableController();
-	SufuIDatabase<Integer, String> getEntitiesTableController();
+	SufuIDatabase<Integer, String> getCategoriesTable();
+	SufuIDatabase<Integer, String> getEntitiesTable();
 }

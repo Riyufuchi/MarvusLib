@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import riyufuchi.marvusLib.data.Transaction;
 
+@SuppressWarnings("deprecation")
 public class FinancialCategoryTest
 {
 	private Transaction t1, t2;

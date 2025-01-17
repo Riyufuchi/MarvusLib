@@ -8,13 +8,14 @@ import riyufuchi.marvusLib.enums.MarvusTransactionOrderBy;
 /**
  * @author Riyufuchi
  * @since 18.04.2023
- * @version 15.01.2025
+ * @version 17.01.2025
  */
 public class MarvusDataComparation
 {
 	private MarvusDataComparation()
 	{}
 	
+	@Deprecated
 	public static Comparator<FinancialCategory> compareFinancialCategory(MarvusTransactionOrderBy compareMethod)
 	{
 		if(compareMethod == null)
@@ -27,6 +28,20 @@ public class MarvusDataComparation
 			default -> (m1, m2) -> { return m1.getCategory().compareTo(m2.getCategory()); };
 		};
 	}
+	
+	public static Comparator<FinancialCategorySafe> compareFinancialCategorySafe(MarvusTransactionOrderBy compareMethod)
+	{
+		if(compareMethod == null)
+			compareMethod = MarvusTransactionOrderBy.NAME;
+		return switch (compareMethod)
+		{
+			case NAME -> (m1, m2) -> { return m1.getCategory().compareTo(m2.getCategory()); };
+			case LOWEST_TO_HIGHEST -> (m1, m2) -> { return m1.getSum().compareTo(m2.getSum()); };
+			case HIGHEST_TO_LOWEST -> (m1, m2) -> { return m2.getSum().compareTo(m1.getSum()); };
+			default -> (m1, m2) -> { return m1.getCategory().compareTo(m2.getCategory()); };
+		};
+	}
+	
 	
 	public static Comparator<Transaction> compareBy(MarvusTransactionOrderBy compareMethod)
 	{

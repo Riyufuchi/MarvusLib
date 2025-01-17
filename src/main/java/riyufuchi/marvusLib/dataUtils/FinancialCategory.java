@@ -6,16 +6,21 @@ import riyufuchi.marvusLib.dataCalculations.MoneyCalculationsGeneric;
 
 /**
  * Class representing transaction category and unites them into sum<br><br>
- * 
- * Created On: 18.04.2023<br>
- * Last Edit: 01.10.2023
- * 
- * @author RiyufuchiW
+ *
+ * @author Riyufuchi
+ * @since 18.04.2023
+ * @version 17.01.2025
  */
+@Deprecated
 public class FinancialCategory extends MoneyCalculationsGeneric<Transaction>
 {
 	private String category;
 	
+	/**
+	 *  Sets category name to <code>this.category = transaction.getName();</code> and this class dosn't cache sum
+	 *  
+	 * @param transaction
+	 */
 	public FinancialCategory(Transaction transaction)
 	{
 		super();

@@ -10,11 +10,11 @@ import java.util.List;
 /**
  * @author riyufuchi
  * @since 26.11.2024
- * @version 30.12.2024
+ * @version 17.01.2025
  */
 public final class TransactionTableModel extends AbstractTableModel
 {
-	private static final String[] COLUMN_NAMES = { "Name", "Category", "Value", "Currency", "Date", "Note" };
+	public static final String[] COLUMN_NAMES = { "Name", "Category", "Value", "Currency", "Date", "Note" };
 	private final List<Transaction> transactions;
 
 	public TransactionTableModel(List<Transaction> transactions)

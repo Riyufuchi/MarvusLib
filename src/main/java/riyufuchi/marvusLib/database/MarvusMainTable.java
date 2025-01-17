@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 
 import riyufuchi.marvusLib.data.Transaction;
 import riyufuchi.marvusLib.dataStructures.MarvusDataTable;
-import riyufuchi.marvusLib.dataUtils.FinancialCategory;
+import riyufuchi.marvusLib.dataUtils.FinancialCategorySafe;
 import riyufuchi.marvusLib.dataUtils.MarvusDataComparation;
 import riyufuchi.marvusLib.enums.MarvusTransactionOrderBy;
 import riyufuchi.marvusLib.records.MarvusYearOverview;
@@ -23,13 +23,13 @@ import riyufuchi.sufuLib.records.SufuRow;
  * 
  * @author Riyufuchi
  * @since 1.95 - 12.02.2024
- * @version 15.01.2025
+ * @version 17.01.2025
  */
 public class MarvusMainTable extends MarvusDataTable implements SufuIDatabase<Integer, Transaction>
 {
 	private static final long serialVersionUID = 3L;
 	protected transient Consumer<String> errorHandler;
-	private transient Comparator<FinancialCategory> sorter;
+	private transient Comparator<FinancialCategorySafe> sorter;
 	
 	public MarvusMainTable()
 	{
@@ -39,7 +39,7 @@ public class MarvusMainTable extends MarvusDataTable implements SufuIDatabase<In
 	public MarvusMainTable(Consumer<String> errorHandler)
 	{
 		super();
-		this.sorter = MarvusDataComparation.compareFinancialCategory(MarvusTransactionOrderBy.NAME);
+		this.sorter = MarvusDataComparation.compareFinancialCategorySafe(MarvusTransactionOrderBy.NAME);
 		if (errorHandler == null)
 			this.errorHandler = e -> System.out.println(e);
 		else
@@ -52,14 +52,6 @@ public class MarvusMainTable extends MarvusDataTable implements SufuIDatabase<In
 			Collections.sort(getCategorizedMonth(i), sorter);
 	}
 	
-	public int assumeYear()
-	{
-		Transaction t = getByID(1).orElse(new Transaction());
-		if (t.getID() == -1)
-			return -1;
-		return t.getDate().getYear();
-	}
-	
 	// SETTERS
 	
 	/**
@@ -67,7 +59,7 @@ public class MarvusMainTable extends MarvusDataTable implements SufuIDatabase<In
 	 * 
 	 * @param comp
 	 */
-	public void setComparator(Comparator<FinancialCategory> comp)
+	public void setComparator(Comparator<FinancialCategorySafe> comp)
 	{
 		if (comp == null)
 			return;
@@ -84,16 +76,16 @@ public class MarvusMainTable extends MarvusDataTable implements SufuIDatabase<In
 	
 	// GETTERS
 	
-	public LinkedList<FinancialCategory> getCategorizedYearByCategories(int year)
+	public LinkedList<FinancialCategorySafe> getCategorizedYearByCategories(int year)
 	{
-		LinkedList<FinancialCategory> list = new LinkedList<>();
-		FinancialCategory holder = null;
+		LinkedList<FinancialCategorySafe> list = new LinkedList<>();
+		FinancialCategorySafe holder = null;
 		for (Transaction t : this)
 		{
 			if (t.getDate().getYear() != year)
 				continue;
-			holder = new FinancialCategory(t.getCategory(), t);
-			for (FinancialCategory mc : list)
+			holder = new FinancialCategorySafe(t);
+			for (FinancialCategorySafe mc : list)
 			{
 				if (mc.getCategory().equals(holder.getCategory()))
 				{
@@ -153,16 +145,16 @@ public class MarvusMainTable extends MarvusDataTable implements SufuIDatabase<In
 		return new MarvusYearOverview(year, incomes, spendings, outcomes, totalIncome, totalSpendings, totalIncome.add(totalSpendings), totalOutcomes);
 	}
 	
-	public LinkedList<FinancialCategory> getCategorizedMonth(Month month)
+	public LinkedList<FinancialCategorySafe> getCategorizedMonth(Month month)
 	{
-		LinkedList<FinancialCategory> list = new LinkedList<>();
+		LinkedList<FinancialCategorySafe> list = new LinkedList<>();
 		if (month == null)
 			return list;
-		FinancialCategory holder = null;
+		FinancialCategorySafe holder = null;
 		for (Transaction t : getMonth(month))
 		{
-			holder = new FinancialCategory(t.getCategory(), t);
-			for (FinancialCategory mc : list)
+			holder = new FinancialCategorySafe(t);
+			for (FinancialCategorySafe mc : list)
 			{
 				if (mc.getCategory().equals(holder.getCategory()))
 				{
@@ -174,20 +166,19 @@ public class MarvusMainTable extends MarvusDataTable implements SufuIDatabase<In
 			if(holder != null)
 				list.add(holder);
 		}
-		Collections.sort(list, sorter);
 		return list;
 	}
 	
-	public LinkedList<FinancialCategory> getCategorizedMonthByNames(Month month)
+	public LinkedList<FinancialCategorySafe> getCategorizedMonthByNames(Month month)
 	{
-		LinkedList<FinancialCategory> list = new LinkedList<>();
+		LinkedList<FinancialCategorySafe> list = new LinkedList<>();
 		if (month == null)
 			return list;
-		FinancialCategory holder = null;
+		FinancialCategorySafe holder = null;
 		for (Transaction t : getMonth(month))
 		{
-			holder = new FinancialCategory(t);
-			for (FinancialCategory mc : list)
+			holder = new FinancialCategorySafe(t.getName(), t);
+			for (FinancialCategorySafe mc : list)
 			{
 				if (mc.getCategory().equals(holder.getCategory()))
 				{
@@ -199,7 +190,6 @@ public class MarvusMainTable extends MarvusDataTable implements SufuIDatabase<In
 			if(holder != null)
 				list.add(holder);
 		}
-		Collections.sort(list, sorter);
 		return list;
 	}
 
@@ -260,8 +250,13 @@ public class MarvusMainTable extends MarvusDataTable implements SufuIDatabase<In
 	}
 
 	@Override
-	public LinkedList<SufuRow<Integer, Transaction>> getRows(Comparator<SufuRow<Integer, Transaction>> comparator) {
-		// TODO Auto-generated method stub
+	public LinkedList<SufuRow<Integer, Transaction>> getRows(Comparator<SufuRow<Integer, Transaction>> comparator)
+	{
 		return null;
+	}
+	
+	public Consumer<String> getErrorHandler()
+	{
+		return errorHandler;
 	}
 }
